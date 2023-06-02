@@ -1,0 +1,12 @@
+[submodule "content_service"]
+	path = content_service
+	url = https://github.com/IT-REX-Platform/content_service.git
+[submodule "user_service"]
+	path = user_service
+	url = https://github.com/IT-REX-Platform/user_service.git
+[submodule "course_service"]
+	path = course_service
+	url = https://github.com/IT-REX-Platform/course_service.git
+[submodule "media_service"]
+	path = media_service
+	url = https://github.com/IT-REX-Platform/media_service.git
