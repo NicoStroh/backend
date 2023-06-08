@@ -10,3 +10,6 @@
 [submodule "user_service"]
 	path = user_service
 	url = https://github.com/IT-REX-Platform/user_service.git
+[submodule "graphql_gateway"]
+	path = graphql_gateway
+	url = https://github.com/IT-REX-Platform/graphql_gateway.git
