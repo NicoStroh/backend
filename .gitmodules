@@ -13,3 +13,6 @@
 [submodule "graphql_gateway"]
 	path = graphql_gateway
 	url = https://github.com/IT-REX-Platform/graphql_gateway.git
+[submodule "gits-frontend"]
+	path = gits-frontend
+	url = https://github.com/IT-REX-Platform/gits-frontend.git
