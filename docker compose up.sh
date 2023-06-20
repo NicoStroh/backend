@@ -1,3 +1,4 @@
+docker network create -d bridge dapr-network
 # comment out services that you don't need
 # new services need to be added as they get worked on
 # make sure that all projects are in the same folder e.g. gits
