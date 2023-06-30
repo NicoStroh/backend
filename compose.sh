@@ -8,4 +8,4 @@ docker compose \
 -f ./content_service/docker-compose.yml \
 -f ./gits-frontend/docker-compose.yml \
 --project-name gits \
-down
+$@
