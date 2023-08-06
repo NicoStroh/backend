@@ -22,3 +22,6 @@
 [submodule "reward_service"]
 	path = reward_service
 	url = https://github.com/IT-REX-Platform/reward_service
+[submodule "quiz_service"]
+	path = quiz_service
+	url = https://github.com/IT-REX-Platform/quiz_service.git

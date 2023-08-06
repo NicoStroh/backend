@@ -7,6 +7,7 @@ docker-compose ^
 -f .\flashcard_service\docker-compose.yml ^
 -f .\user_service\docker-compose.yml ^
 -f .\reward_service\docker-compose.yml ^
+-f .\quiz_service\docker-compose.yml ^
 -f .\gits-frontend\docker-compose.yml ^
 --project-name gits ^
 %*
