@@ -182,20 +182,6 @@ query = gql(
                 chapterId: $chapter1Id
             }
         }) { id }
-        chapter1Flashcards: createAssessment(input: {
-            metadata: {
-                name: "Chapter 1 Flashcards",
-                type: FLASHCARDS,
-                rewardPoints: 2,
-                suggestedDate: "2023-06-10T12:39:12.365Z",
-                chapterId: $chapter1Id
-            },
-            assessmentMetadata: {
-                skillPoints: 3,
-                skillType: REMEMBER,
-                initialLearningInterval: 3
-            }
-        }) { id }
         chapter2Content: createMediaContent(input: {
             metadata: {
                 name: "PSE Vorlesung 2 Materialien",
@@ -217,7 +203,7 @@ contentRes = client.execute(query, variable_values=params)
 # create media records
 query = gql(
     """
-    mutation ($chapter1Content: UUID!, $cheatSheetContent: UUID!) {
+    mutation ($chapter1Content: UUID!, $chapter2Content: UUID! $cheatSheetContent: UUID!) {
         mediaVideo: createMediaRecord(input: {
             name: "PSE VL-Video 1",
             type: VIDEO,
@@ -227,6 +213,11 @@ query = gql(
             name: "Folien VL 1",
             type: PRESENTATION,
             contentIds: [$chapter1Content]
+        }) { id }
+        c2Video: createMediaRecord(input: {
+            name: "PSE VL-Video 2",
+            type: VIDEO,
+            contentIds: [$chapter2Content]
         }) { id }
         javaCheatSheet: createMediaRecord(input: {
             name: "Java Cheat Sheet",
@@ -238,36 +229,214 @@ query = gql(
 )
 params = {
     "chapter1Content": contentRes["chapter1Content"]["id"],
-    "cheatSheetContent": contentRes["cheatSheetContent"]["id"]
+    "cheatSheetContent": contentRes["cheatSheetContent"]["id"],
+    "chapter2Content": contentRes["chapter2Content"]["id"]
 }
 mediaRes = client.execute(query, variable_values=params)
 
-# create flashcard set
+# create flashcard set assessment
 query = gql(
     """
-    mutation ($assessmentId: UUID!) {
-        flashcardSet: createFlashcardSet(input: {
-            assessmentId: $assessmentId,
-            flashcards: [
-                { sides: [
-                    { label: "Question", text: "What is a *string*?", isQuestion: true },
-                    { label: "Answer", text: "A sequence of text characters.", isQuestion: false }
-                ] },
-                { sides: [
-                    { label: "Question", text: "What is a *char*?", isQuestion: true },
-                    { label: "Answer", text: "A single text character.", isQuestion: false }
-                ] },
-                { sides: [
-                    { label: "Question", text: "In Java and C#, the *static* keyword has different meanings when used on classes. What are they?", isQuestion: true },
-                    { label: "Static Classes in C#", text: "In C#, a static class is a class whose members are also all defined as static.", isQuestion: false },
-                    { label: "Static Classes in Java", text: "In Java, only nested classes can be declared static. A static nested class can be instantiated without an instance of the outer class.", isQuestion: false }
-                ] }
-            ]
-        }) { assessmentId }
+    mutation ($chapter1Id: UUID!) {
+        flashcardSetAssessment: createFlashcardSetAssessment(
+            assessmentInput: {
+                metadata: {
+                    name: "Chapter 1 Flashcards",
+                    type: FLASHCARDS,
+                    rewardPoints: 2,
+                    suggestedDate: "2023-06-10T12:39:12.365Z",
+                    chapterId: $chapter1Id
+                },
+                assessmentMetadata: {
+                    skillPoints: 3,
+                    skillType: REMEMBER,
+                    initialLearningInterval: 3
+                }
+            }
+            flashcardSetInput: {
+                flashcards: [
+                    { sides: [
+                        { 
+                            label: "Question",
+                            text: {text: "What is a *string*?"},
+                            isQuestion: true,
+                            isAnswer: false
+                        },
+                        { 
+                            label: "Answer",
+                            text: {text: "A sequence of text characters."},
+                            isQuestion: false,
+                            isAnswer: true
+                        }
+                    ] },
+                    { sides: [
+                        { 
+                            label: "Question", 
+                            text: {text: "What is a *char*?"}, 
+                            isQuestion: true,
+                            isAnswer: false
+                        },
+                        {
+                            label: "Answer",
+                            text: {text: "A single text character."},
+                            isQuestion: false,
+                            isAnswer: true
+                        }
+                    ] },
+                    { sides: [
+                        {
+                            label: "Question",
+                            text: {text: "In Java and C#, the *static* keyword has different meanings when used on classes. What are they?"},
+                            isQuestion: true,
+                            isAnswer: false
+                        },
+                        {
+                            label: "Static Classes in C#",
+                            text: {text: "In C#, a static class is a class whose members are also all defined as static."},
+                            isQuestion: false,
+                            isAnswer: true
+                        },
+                        {
+                            label: "Static Classes in Java",
+                            text: {text: "In Java, only nested classes can be declared static. A static nested class can be instantiated without an instance of the outer class."},
+                            isQuestion: false,
+                            isAnswer: true
+                        }
+                    ] }
+                ]
+            }
+        ) { id }
     }
     """
 )
 params = {
-    "assessmentId": contentRes["chapter1Flashcards"]["id"]
+    "chapter1Id": pseChapterRes["chapter1"]["id"]
 }
 flashcardsRes = client.execute(query, variable_values=params)
+
+# create quiz
+query = gql(
+    """
+    mutation ($chapterId: UUID!) {
+        createQuizAssessment(
+          assessmentInput: {
+            metadata: {
+              name: "TestQuiz",
+              type: QUIZ,
+              suggestedDate: "2023-06-10T12:39:12.365Z",
+              rewardPoints: 1,
+              tagNames: []
+          		chapterId: $chapterId
+            }
+            assessmentMetadata: {
+              skillPoints: 1,
+              skillType: REMEMBER,
+              initialLearningInterval: 1
+            }
+          },
+          quizInput: {
+            requiredCorrectAnswers: 1,
+            questionPoolingMode: RANDOM,
+            numberOfRandomlySelectedQuestions: 1,
+            multipleChoiceQuestions: [
+              {
+                number: 1
+                text: "What is German food"
+              	hint: "Are you stupid?"
+                answers: [
+                  {
+                    text: "Brot",
+                    correct: true,
+                    feedback: "Good"
+                  },
+                  {
+                    text: "Curry"
+                    correct: false
+                    feedback: "Aber ganz sicher nicht, außer du meinst damit Currywurst."
+                  }
+                ]
+              }
+            ]
+          }
+        ) {
+          id
+        }
+    }
+    """
+)
+params = {
+    "chapterId": pseChapterRes["chapter1"]["id"]
+}
+quizRes = client.execute(query, variable_values=params)
+
+# create section
+query = gql(
+    """
+    mutation($chapter1Id: UUID!, $chapter2Id: UUID!) {
+        c1Section: createSection(input: {
+            chapterId: $chapter1Id,
+            name: "Test Section"
+        }) { id }
+        c2Section: createSection(input: {
+            chapterId: $chapter2Id,
+            name: "Test Section2"
+        }) { id }
+    }
+    """
+)
+params = {
+    "chapter1Id": pseChapterRes["chapter1"]["id"],
+    "chapter2Id": pseChapterRes["chapter2"]["id"]
+}
+sectionRes = client.execute(query, variable_values=params)
+
+# create stages
+query = gql(
+    """
+    mutation ($sectionId: UUID!, $c2sectionId: UUID!) {
+        createStage1: createStage(sectionId: $sectionId) { id }
+        createStage2: createStage(sectionId: $sectionId) { id }
+        c2createStage1: createStage(sectionId: $c2sectionId) { id }
+    }
+    """
+)
+params = {
+    "sectionId": sectionRes["c1Section"]["id"],
+    "c2sectionId": sectionRes["c2Section"]["id"]
+}
+stageRes = client.execute(query, variable_values=params)
+
+# add content to stages
+query = gql(
+    """
+    mutation ($stage1Id: UUID!, $stage2Id: UUID!, $c2stage1Id: UUID!, $s1RequiredContents: [UUID!]!, $s2RequiredContents: [UUID!]!, $c2s1RequiredContents: [UUID!]!) {
+        stage1: updateStage(input: {
+            id: $stage1Id
+            requiredContents: $s1RequiredContents
+            optionalContents: []
+        }) { id }
+        stage2: updateStage(input: {
+            id: $stage2Id
+            requiredContents: $s2RequiredContents
+            optionalContents: []
+        }) { id }
+        c2stage: updateStage(input: {
+            id: $c2stage1Id
+            requiredContents: $c2s1RequiredContents
+            optionalContents: []
+        }) { id }
+    }
+    """
+)
+params = {
+    "stage1Id": stageRes["createStage1"]["id"],
+    "stage2Id": stageRes["createStage2"]["id"],
+    "c2stage1Id": stageRes["c2createStage1"]["id"],
+    "s1RequiredContents": [contentRes["chapter1Content"]["id"]],
+    "s2RequiredContents": [
+        flashcardsRes["flashcardSetAssessment"]["id"],
+        quizRes["createQuizAssessment"]["id"]
+    ],
+    "c2s1RequiredContents": [contentRes["chapter2Content"]["id"]]
+}
+stageRes = client.execute(query, variable_values=params)

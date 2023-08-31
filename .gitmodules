@@ -25,3 +25,6 @@
 [submodule "quiz_service"]
 	path = quiz_service
 	url = https://github.com/IT-REX-Platform/quiz_service.git
+[submodule "skilllevel_service"]
+	path = skilllevel_service
+	url = https://github.com/IT-Rex-Platform/skilllevel_service
