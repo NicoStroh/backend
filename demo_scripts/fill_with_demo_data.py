@@ -5,6 +5,8 @@ import json
 
 GATEWAY_URL = "http://127.0.0.1:8080/graphql"
 KEYCLOAK_URL = "http://localhost:9009/realms/GITS/protocol/openid-connect/token"
+#GATEWAY_URL = "http://orange.informatik.uni-stuttgart.de/graphql"
+#KEYCLOAK_URL = "https://orange.informatik.uni-stuttgart.de/keycloak/"
 
 from gql import gql, Client
 from gql.transport.aiohttp import AIOHTTPTransport
