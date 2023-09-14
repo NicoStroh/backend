@@ -14,4 +14,4 @@ This repository uses git submodules to be able to retrieve the repositories of a
 
 The local deployment of the backend is done in two steps:
 * start docker (desktop)
-* execute the .bat or .sh file found under ./gits_backend/compose.bat up --build 
+* execute the .bat or .sh file found under ./gits_backend/compose.bat using `compose.bat up --build` (builds everytime) or `compose.bat up`. 
