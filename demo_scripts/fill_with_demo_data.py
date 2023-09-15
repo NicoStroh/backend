@@ -251,7 +251,7 @@ query = gql(
                 },
                 assessmentMetadata: {
                     skillPoints: 3,
-                    skillType: REMEMBER,
+                    skillTypes: [REMEMBER],
                     initialLearningInterval: 3
                 }
             }
@@ -260,13 +260,13 @@ query = gql(
                     { sides: [
                         { 
                             label: "Question",
-                            text: {text: "What is a *string*?"},
+                            text: "What is a *string*?",
                             isQuestion: true,
                             isAnswer: false
                         },
                         { 
                             label: "Answer",
-                            text: {text: "A sequence of text characters."},
+                            text: "A sequence of text characters.",
                             isQuestion: false,
                             isAnswer: true
                         }
@@ -274,13 +274,13 @@ query = gql(
                     { sides: [
                         { 
                             label: "Question", 
-                            text: {text: "What is a *char*?"}, 
+                            text: "What is a *char*?", 
                             isQuestion: true,
                             isAnswer: false
                         },
                         {
                             label: "Answer",
-                            text: {text: "A single text character."},
+                            text: "A single text character.",
                             isQuestion: false,
                             isAnswer: true
                         }
@@ -288,19 +288,19 @@ query = gql(
                     { sides: [
                         {
                             label: "Question",
-                            text: {text: "In Java and C#, the *static* keyword has different meanings when used on classes. What are they?"},
+                            text: "In Java and C#, the *static* keyword has different meanings when used on classes. What are they?",
                             isQuestion: true,
                             isAnswer: false
                         },
                         {
                             label: "Static Classes in C#",
-                            text: {text: "In C#, a static class is a class whose members are also all defined as static."},
+                            text: "In C#, a static class is a class whose members are also all defined as static.",
                             isQuestion: false,
                             isAnswer: true
                         },
                         {
                             label: "Static Classes in Java",
-                            text: {text: "In Java, only nested classes can be declared static. A static nested class can be instantiated without an instance of the outer class."},
+                            text: "In Java, only nested classes can be declared static. A static nested class can be instantiated without an instance of the outer class.",
                             isQuestion: false,
                             isAnswer: true
                         }
@@ -332,33 +332,14 @@ query = gql(
             }
             assessmentMetadata: {
               skillPoints: 1,
-              skillType: REMEMBER,
+              skillTypes: [REMEMBER],
               initialLearningInterval: 1
             }
           },
           quizInput: {
             requiredCorrectAnswers: 1,
             questionPoolingMode: RANDOM,
-            numberOfRandomlySelectedQuestions: 1,
-            multipleChoiceQuestions: [
-              {
-                number: 1
-                text: "What is German food"
-              	hint: "Are you stupid?"
-                answers: [
-                  {
-                    text: "Brot",
-                    correct: true,
-                    feedback: "Good"
-                  },
-                  {
-                    text: "Curry"
-                    correct: false
-                    feedback: "Aber ganz sicher nicht, außer du meinst damit Currywurst."
-                  }
-                ]
-              }
-            ]
+            numberOfRandomlySelectedQuestions: 1
           }
         ) {
           id
@@ -370,6 +351,39 @@ params = {
     "chapterId": pseChapterRes["chapter1"]["id"]
 }
 quizRes = client.execute(query, variable_values=params)
+
+# add questions to quiz
+query = gql(
+    """
+    mutation ($quizId: UUID!) {
+        mutateQuiz(assessmentId: $quizId) {
+            addMultipleChoiceQuestion(input: {
+                number: 1
+                text: "What is German food"
+              	hint: "Are you stupid?"
+                answers: [
+                  {
+                    answerText: "Brot",
+                    correct: true,
+                    feedback: "Good"
+                  },
+                  {
+                    answerText: "Curry"
+                    correct: false
+                    feedback: "Aber ganz sicher nicht, außer du meinst damit Currywurst."
+                  }
+                ]
+              }
+            ) { assessmentId }
+        }
+    }
+    """
+)
+params = {
+    "quizId": quizRes["createQuizAssessment"]["id"]
+}
+quizQuestionRes = client.execute(query, variable_values=params)
+
 
 # create section
 query = gql(
@@ -395,45 +409,29 @@ sectionRes = client.execute(query, variable_values=params)
 # create stages
 query = gql(
     """
-    mutation ($sectionId: UUID!, $c2sectionId: UUID!) {
-        createStage1: createStage(sectionId: $sectionId) { id }
-        createStage2: createStage(sectionId: $sectionId) { id }
-        c2createStage1: createStage(sectionId: $c2sectionId) { id }
+    mutation ($sectionId: UUID!, $c2sectionId: UUID!, $s1RequiredContents: [UUID!]!, $s2RequiredContents: [UUID!]!, $c2s1RequiredContents: [UUID!]!) {
+        c1s1: mutateSection(sectionId: $sectionId) {
+            s1: createStage(input: {
+                requiredContents: $s1RequiredContents
+                optionalContents: []
+            }) { id }
+            s2: createStage(input: {
+                requiredContents: $s2RequiredContents
+                optionalContents: []
+            }) { id }
+        }
+        c2s1: mutateSection(sectionId: $c2sectionId) {
+            createStage(input: {
+                requiredContents: $c2s1RequiredContents
+                optionalContents: []
+            }) { id }
+        }
     }
     """
 )
 params = {
     "sectionId": sectionRes["c1Section"]["id"],
-    "c2sectionId": sectionRes["c2Section"]["id"]
-}
-stageRes = client.execute(query, variable_values=params)
-
-# add content to stages
-query = gql(
-    """
-    mutation ($stage1Id: UUID!, $stage2Id: UUID!, $c2stage1Id: UUID!, $s1RequiredContents: [UUID!]!, $s2RequiredContents: [UUID!]!, $c2s1RequiredContents: [UUID!]!) {
-        stage1: updateStage(input: {
-            id: $stage1Id
-            requiredContents: $s1RequiredContents
-            optionalContents: []
-        }) { id }
-        stage2: updateStage(input: {
-            id: $stage2Id
-            requiredContents: $s2RequiredContents
-            optionalContents: []
-        }) { id }
-        c2stage: updateStage(input: {
-            id: $c2stage1Id
-            requiredContents: $c2s1RequiredContents
-            optionalContents: []
-        }) { id }
-    }
-    """
-)
-params = {
-    "stage1Id": stageRes["createStage1"]["id"],
-    "stage2Id": stageRes["createStage2"]["id"],
-    "c2stage1Id": stageRes["c2createStage1"]["id"],
+    "c2sectionId": sectionRes["c2Section"]["id"],
     "s1RequiredContents": [contentRes["chapter1Content"]["id"]],
     "s2RequiredContents": [
         flashcardsRes["flashcardSetAssessment"]["id"],
