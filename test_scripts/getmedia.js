@@ -1,18 +1,12 @@
 import http from 'k6/http';
 import {getToken} from './token.js';
+import {check} from 'k6';
 
 export const options = {
 	scenarios: {
-		five_hundred_users: {
-			executor: 'shared-iterations',
-			startTime: "0s",
-			vus: 500,
-			iterations: 500,
-			maxDuration: '5m'
-		},
-		ramping_users: {
+		/*ramping_users: {
 			executor: 'ramping-vus',
-			// startTime: "10s",
+			startTime: "0s",
 			startVUs: 0,
 			stages: [
 				{ duration: '30s', target: 50 },
@@ -22,37 +16,41 @@ export const options = {
 				{ duration: '30s', target: 400 },
 				{ duration: '30s', target: 500 },
 			],
-		},
-		constant_arrival_rate: {
-			executor: 'constant-arrival-rate',
-			// startTime: "210s",
-			duration: '1m',
-			rate: 200,
-			preAllocatedVUs: 100,
-			maxVUs: 500,
-		},
+		},*/
 		ramping_arrival_rate: {
 			executor: 'ramping-arrival-rate',
-			// startTime: '300s',
-			preAllocatedVUs: 500,
+			startTime: '0s',
+			preAllocatedVUs: 1000,
 			maxVUs: 5000,
 			startRate: 0,
 			stages: [
-				{ duration: '30s', target: 50 },
-				{ duration: '30s', target: 100 },
-				{ duration: '30s', target: 200 },
-				{ duration: '30s', target: 300 },
-				{ duration: '30s', target: 400 },
-				{ duration: '30s', target: 500 },
+				{ duration: '100s', target: 90 },
+				{ duration: '1000s', target: 300 },
+				{ duration: '800s', target: 500 }
 			],
-		}
+		},
+		/*constant_arrival_rate: {
+			executor: 'constant-arrival-rate',
+			startTime: "190s",
+			duration: '1m',
+			rate: 200,
+			preAllocatedVUs: 1000,
+			maxVUs: 5000,
+		},*/
+		/*five_hundred_users: {
+			executor: 'shared-iterations',
+			startTime: "260s",
+			vus: 500,
+			iterations: 500,
+			maxDuration: '5m'
+		},*/
 	},
 	insecureSkipTLSVerify: true
 };
 
-const query = `
-	query MediaRecordsById {
-		mediaRecordsByIds(ids: ["064e6b7e-f3b9-44c5-86c3-2441e0de598c", "985f51bf-a526-432a-9156-199f5b1676b3"]) {
+const queryByIds = `
+	query MediaRecordsById($ids: [UUID!]!) {
+		mediaRecordsByIds(ids: $ids) {
 			id
 			name
 			creatorId
@@ -64,21 +62,67 @@ const query = `
 	}`;
 
 export function setup() {
-	return getToken();
+	const token = getToken();
+
+	const recordIds = sendQuery(token,
+		`
+		query {
+			mediaRecords {
+				id
+			}
+		}`).json().data.mediaRecords.map(record => record.id);
+
+	return {
+		token: token,
+		recordIds: recordIds
+	};
 }
 
 export default function (data) {
+	const randomId = data.recordIds[Math.floor(Math.random() * data.recordIds.length)];
 
+	const variables = {
+		ids: [randomId]
+	};
 
-    const headers = {
-        'Authorization': `Bearer ${data.access_token}`,
-        'Content-Type': 'application/json',
+	let res = null;
+
+	res = sendQuery(data.token, queryByIds, variables);
+
+	// simple check to see if json has the right structure (i.e. the response is actual data and not some error)
+	check(res, {
+		"error response": (r) => {
+			let failed = isFailedResponse(r);
+			if(failed) {
+				console.log("Unsuccessful response: ");
+				console.log(r);
+			}
+			return failed;
+		}
+	});
+
+	//console.log(res.body);
+}
+
+function sendQuery(token, query, variables = {}) {
+	const headers = {
+        'Authorization': `Bearer ${token.access_token}`,
+        "currentUser": "{\"id\": \"3afa8ad6-7702-4f17-b06c-503db0db28a3\",\"userName\": \"myluki2000\",\"firstName\": \"Luk\",\"lastName\": \"Tra\"}",
+		'Content-Type': 'application/json',
     }
 
-  const res = http.post(`${__ENV.k6_GATEWAY_URL}`, JSON.stringify({query: query}), {
-	headers: headers,
-  });
+	return http.post(`${__ENV.k6_GATEWAY_URL}`, JSON.stringify({query: query, variables: variables}), {
+		headers: headers,
+	  });
+}
 
-	console.log(res.body)
+function isFailedResponse(res) {
+	if(res.status === 200)
+		return false;
 
+	try { 
+		return res.json().data.mediaRecordsByIds[0].id === null;
+	} catch(e) {
+		return true;
+	}
 }
