@@ -13,67 +13,70 @@ import urllib
 import json
 import ssl
 import pyperclip
-
-from gql.transport.aiohttp import AIOHTTPTransport
+import argparse
 
 KEYCLOAK_URL_DEPLOYED = "https://orange.informatik.uni-stuttgart.de/keycloak/realms/GITS/protocol/openid-connect/token"
 KEYCLOAK_URL_LOCAL = "http://localhost:9009/realms/GITS/protocol/openid-connect/token"
 
-use_local = None
-
-if len(sys.argv) >= 3:
-    user_name = sys.argv[1]
-    user_password = sys.argv[2]
-
-    if len(sys.argv) >= 4:
-        if sys.argv[3] == "--local":
-            use_local = True
-        elif sys.argv[3] == "--deployed":
+def get_auth_token(user_name: str = None, user_password: str = None, use_local: bool = None):
+    # if no info provided, ask user interactively if local or deployed keycloak should be used
+    while use_local is None:
+        user_answer = input("Use deployed keycloak instance? (y/n): ")
+        if user_answer == "y":
             use_local = False
+        elif user_answer == "n":
+            use_local = True
         else:
-            print("Invalid argument: " + sys.argv[3])
-            sys.exit(1)
-else:
-    user_name = input("Please enter your user name: ")
-    user_password = input("Please enter your password: ")
+            print("Invalid input.")
 
-while use_local is None:
-    user_answer = input("Use deployed keycloak instance? (y/n): ")
-    if user_answer == "y":
-        use_local = False
-    elif user_answer == "n":
-        use_local = True
-    else:
-        print("Invalid input.")
+    # if no info provided, ask user interactively for user name and password
+    if user_name is None:
+        user_name = input("Username: ")
+    if user_password is None:
+        user_password = input("Password: ")
 
-data = {
-    "grant_type": "password",
-    "client_id": "gits-frontend",
-    "username": user_name,
-    "password": user_password
-}
+    data = {
+        "grant_type": "password",
+        "client_id": "gits-frontend",
+        "username": user_name,
+        "password": user_password
+    }
 
-url = KEYCLOAK_URL_LOCAL if use_local else KEYCLOAK_URL_DEPLOYED
-data = urllib.parse.urlencode(data).encode("utf-8")
-req = urllib.request.Request(url, data=data)
+    url = KEYCLOAK_URL_LOCAL if use_local else KEYCLOAK_URL_DEPLOYED
+    data = urllib.parse.urlencode(data).encode("utf-8")
+    req = urllib.request.Request(url, data=data)
 
-ctx = ssl.create_default_context()
-ctx.check_hostname = False
-ctx.verify_mode = ssl.CERT_NONE
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
 
-with urllib.request.urlopen(req, context=ctx) as response:
-    user_token = json.loads(response.read())["access_token"]
+    with urllib.request.urlopen(req, context=ctx) as response:
+        user_token = json.loads(response.read())["access_token"]
 
-if not user_token:
-    print("Could not get user token.")
-    sys.exit(1)
+    if not user_token:
+        print("Could not get user token.")
+        sys.exit(1)
 
-print("Your user token:")
-print(user_token)
+    return user_token
 
-auth_header = "{ \"authorization\": \"" + user_token + "\" }"
-
-# copy to clipboard
-
-pyperclip.copy(auth_header)
-print("Copied authorization header to clipboard.")
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Get a session token for a user.")
+    parser.add_argument("--local", action="store_true", dest="use_local", help="Use the local keycloak instance.")
+    parser.add_argument("--deployed", action="store_false", dest="use_local", help="Use the deployed keycloak instance.")
+    parser.add_argument("--username", help="Usernameo of the user to connect with.")
+    parser.add_argument("--password", help="Password of the user to connect with.")
+    parser.add_argument("--copy-to-clipboard", action="store_true", dest="copy_to_clipboard", help="Copy the authorization header to the clipboard.")
+    
+    args = parser.parse_args()
+    
+    user_token = get_auth_token(args.username, args.password, args.use_local)
+    
+    print("Your user token:")
+    print(user_token)
+    
+    auth_header = "{ \"authorization\": \"" + user_token + "\" }"
+    
+    # copy to clipboard
+    if(args.copy_to_clipboard):
+        pyperclip.copy(auth_header)
+        print("Copied authorization header to clipboard.")

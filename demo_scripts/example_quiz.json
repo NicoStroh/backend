@@ -1,0 +1,114 @@
+{
+    "assessment": {
+        "metadata": {
+            "name": "Sprachtest Schwäbisch A1",
+            "type": "QUIZ",
+            "suggestedDate": "2023-03-10T12:39:12.365Z",
+            "rewardPoints": 10
+        },
+        "assessmentMetadata": {
+            "skillPoints": 2,
+            "skillTypes": [
+                "ANALYSE",
+                "REMEMBER"
+            ],
+            "initialLearningInterval": 3
+        }
+    },
+    "quiz": {
+        "requiredCorrectAnswers": 3,
+        "questionPoolingMode": "ORDERED"
+    },
+    "questions": [
+        {
+            "type": "MULTIPLE_CHOICE",
+            "questionData": {
+                "text": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Was ist das schwäbische Wort für 'Kartoffel'?\"}]}]",
+                "answers": [
+                    {
+                        "answerText": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Kartoffel\"}]}]",
+                        "correct": false
+                    },
+                    {
+                        "answerText": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Grumbiere\"}]}]",
+                        "correct": true
+                    },
+                    {
+                        "answerText": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Kartoffele\"}]}]",
+                        "correct": false
+                    },
+                    {
+                        "answerText": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Grumbeere\"}]}]",
+                        "correct": false
+                    }
+                ]
+            }
+        },
+        {
+            "type": "ASSOCIATION",
+            "questionData": {
+                "text": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Ordne die schwäbischen Wörter den deutschen Wörtern zu.\"}]}]",
+                "correctAssociations": [
+                    {
+                        "left": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Kuttereimer\"}]}]",
+                        "right": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Mülleimer\"}]}]"
+                    },
+                    {
+                        "left": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Muggaseggele\"}]}]",
+                        "right": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"kleinste Maßeinheit\"}]}]"
+                    },
+                    {
+                        "left": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"schwätza\"}]}]",
+                        "right": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"sprechen\"}]}]"
+                    },
+                    {
+                        "left": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Weckle\"}]}]",
+                        "right": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Brötchen\"}]}]"
+                    },
+                    {
+                        "left": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Breschtling\"}]}]",
+                        "right": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Erdbeere\"}]}]"
+                    },
+                    {
+                        "left": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Gosch\"}]}]",
+                        "right": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Mund\"}]}]"
+                    },
+                    {
+                        "left": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"lupfe\"}]}]",
+                        "right": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"heben\"}]}]"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "CLOZE",
+            "questionData": {
+                "clozeElements": [
+                    {
+                        "type": "TEXT",
+                        "text": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"I be en echter Schwob, denn i ess jeden Dag meine\"}]}]"
+                    },
+                    {
+                        "type": "BLANK",
+                        "correctAnswer": "Mauldascha"
+                    },
+                    {
+                        "type": "TEXT",
+                        "text": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\". So en norddeitscher Fraß wie\"}]}]"
+                    },
+                    {
+                        "type": "BLANK",
+                        "correctAnswer": "Fischweckle"
+                    },
+                    {
+                        "type": "TEXT",
+                        "text": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"kommet mir ed ins Haus.\"}]}]"
+                    }
+                ],
+                "additionalWrongAnswers": [
+                    "Weißwirscht"
+                ]
+            }
+        }
+    ]
+}
