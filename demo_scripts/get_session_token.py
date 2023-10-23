@@ -10,6 +10,8 @@
 
 import sys
 import urllib
+import urllib.request
+import urllib.parse
 import json
 import ssl
 import pyperclip
