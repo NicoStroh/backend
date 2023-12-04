@@ -1,5 +1,5 @@
-# gits_backend
-Local dev environment setup for the GITS project. Should not be used in production environments.
+# meitrex_backend
+Local dev environment setup for the MEITREX project. Should not be used in production environments.
 
 # Get Started
 
