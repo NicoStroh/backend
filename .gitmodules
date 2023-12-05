@@ -1,30 +1,30 @@
 [submodule "course_service"]
 	path = course_service
-	url = https://github.com/IT-REX-Platform/course_service.git
+	url = https://github.com/MEITREX/course_service.git
 [submodule "content_service"]
 	path = content_service
-	url = https://github.com/IT-REX-Platform/content_service.git
+	url = https://github.com/MEITREX/content_service.git
 [submodule "media_service"]
 	path = media_service
-	url = https://github.com/IT-REX-Platform/media_service.git
+	url = https://github.com/MEITREX/media_service.git
 [submodule "user_service"]
 	path = user_service
-	url = https://github.com/IT-REX-Platform/user_service.git
+	url = https://github.com/MEITREX/user_service.git
 [submodule "graphql_gateway"]
 	path = graphql_gateway
-	url = https://github.com/IT-REX-Platform/graphql_gateway.git
-[submodule "gits-frontend"]
-	path = gits-frontend
-	url = https://github.com/IT-REX-Platform/gits-frontend.git
+	url = https://github.com/MEITREX/graphql_gateway.git
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/MEITREX/frontend.git
 [submodule "flashcard_service"]
 	path = flashcard_service
-	url = https://github.com/IT-REX-Platform/flashcard_service.git
+	url = https://github.com/MEITREX/flashcard_service.git
 [submodule "reward_service"]
 	path = reward_service
-	url = https://github.com/IT-REX-Platform/reward_service
+	url = https://github.com/MEITREX/reward_service.git
 [submodule "quiz_service"]
 	path = quiz_service
-	url = https://github.com/IT-REX-Platform/quiz_service.git
+	url = https://github.com/MEITREX/quiz_service.git
 [submodule "skilllevel_service"]
 	path = skilllevel_service
-	url = https://github.com/IT-Rex-Platform/skilllevel_service
+	url = https://github.com/MEITREX/skilllevel_service.git
