@@ -9,6 +9,6 @@ docker-compose ^
 -f .\reward_service\docker-compose.yml ^
 -f .\quiz_service\docker-compose.yml ^
 -f .\skilllevel_service\docker-compose.yml ^
--f .\gits-frontend\docker-compose.yml ^
+-f .\frontend\docker-compose.yml ^
 --project-name gits ^
 %*
