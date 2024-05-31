@@ -13,9 +13,6 @@
 [submodule "graphql_gateway"]
 	path = graphql_gateway
 	url = https://github.com/MEITREX/graphql_gateway.git
-[submodule "frontend"]
-	path = frontend
-	url = https://github.com/MEITREX/frontend.git
 [submodule "flashcard_service"]
 	path = flashcard_service
 	url = https://github.com/MEITREX/flashcard_service.git
@@ -28,3 +25,6 @@
 [submodule "skilllevel_service"]
 	path = skilllevel_service
 	url = https://github.com/MEITREX/skilllevel_service.git
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/NicoStroh/frontend.git

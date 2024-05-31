@@ -39,7 +39,7 @@ def get_auth_token(user_name: str = None, user_password: str = None, use_local: 
 
     data = {
         "grant_type": "password",
-        "client_id": "gits-frontend",
+        "client_id": "frontend",
         "username": user_name,
         "password": user_password
     }

@@ -16,7 +16,7 @@ user_password = input("Please enter your password: ")
 
 data = {
     "grant_type": "password",
-    "client_id": "gits-frontend",
+    "client_id": "frontend",
     "username": user_name,
     "password": user_password
 }
