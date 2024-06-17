@@ -33,7 +33,7 @@ If you don't want to develop and only run the service, there is docker compose f
 
 This repository uses git submodules to be able to retrieve the repositories of all services into this repository when cloning. To do this, do the following:
 
-1. As with any repo, clone it using `git clone https://github.com/MEITREX/backend.git`
+1. As with any repo, clone it using `git clone https://github.com/NicoStroh/backend.git`
 2. Move into the repository (`cd backend`)
 3. Initialize the submodules using `git submodule init`
 4. Pull the submodules using `git submodule update`
