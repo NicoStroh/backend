@@ -28,3 +28,6 @@
 [submodule "playertype_service"]
 	path = playertype_service
 	url = https://github.com/NicoStroh/playertype_service
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/NicoStroh/frontend.git
