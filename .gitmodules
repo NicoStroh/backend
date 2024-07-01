@@ -12,7 +12,7 @@
 	url = https://github.com/MEITREX/user_service.git
 [submodule "graphql_gateway"]
 	path = graphql_gateway
-	url = https://github.com/MEITREX/graphql_gateway.git
+	url = https://github.com/NicoStroh/graphql_gateway.git
 [submodule "flashcard_service"]
 	path = flashcard_service
 	url = https://github.com/MEITREX/flashcard_service.git
