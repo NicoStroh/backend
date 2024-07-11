@@ -31,3 +31,6 @@
 [submodule "frontend"]
 	path = frontend
 	url = https://github.com/NicoStroh/frontend.git
+[submodule "gamification_service"]
+	path = gamification_service
+	url = https://github.com/NicoStroh/gamification_service.git
