@@ -25,9 +25,6 @@
 [submodule "skilllevel_service"]
 	path = skilllevel_service
 	url = https://github.com/MEITREX/skilllevel_service.git
-[submodule "playertype_service"]
-	path = playertype_service
-	url = https://github.com/NicoStroh/playertype_service
 [submodule "frontend"]
 	path = frontend
 	url = https://github.com/NicoStroh/frontend.git
